@@ -1,6 +1,13 @@
 import { promises as fs } from "fs";
 import { chromium } from "playwright";
 
+/* *** 
+Please note that this is a script to save the top 10 articles from Hacker News to a CSV file.
+I have also created some tests using the page object model located in tests and pages folders.
+Please use npm i to install my updated package.json and my tests can be run using the command
+`npx playwright test --ui or --debug` in the terminal 
+*** */
+
 async function saveHackerNewsArticles() {
   const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext();
