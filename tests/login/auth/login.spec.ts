@@ -35,11 +35,12 @@ test("verify that a user cannot login with an invalid username and password", as
   expect(await page.getByText("Bad login.")).toBeTruthy();
 });
 
+// note the recaptcha sometimes shows the challenge which sometimes fails the test. At other times it does not show the challenge.
 test("verify that a user can login with a valid username and password", async ({
   homePage,
   page,
 }) => {
-  // wait for page to load completely otherwise an error will be displayed on hackerrank l
+  // wait for page to load completely otherwise an error will be displayed
   await page.waitForTimeout(2000);
   const loginUserName = await page.locator('input[name="acct"]').nth(0);
   await loginUserName.fill("kirstieTest");
@@ -47,5 +48,18 @@ test("verify that a user can login with a valid username and password", async ({
   await loginPassword.fill("password");
   const loginButton = await page.locator('input[type="submit"]').nth(0);
   await loginButton.click();
-  expect(page.url()).toBe("https://news.ycombinator.com/news");
+  await page.waitForTimeout(2000);
+  await page.waitForURL("https://news.ycombinator.com/login");
+
+  const frame = page.frameLocator("iframe[title='reCAPTCHA']");
+  const label = frame.locator("#recaptcha-anchor-label");
+  await expect(label).toHaveText("I'm not a robot");
+  const checkbox = await page
+    .frameLocator('[title="reCAPTCHA"]')
+    .getByRole("checkbox");
+  await checkbox.click();
+  //wait for recaptcha to be verified
+  await page.waitForTimeout(20000);
+  await page.locator('input[type="submit"]').click();
+  expect(await page.url()).toBe("https://news.ycombinator.com/news");
 });
