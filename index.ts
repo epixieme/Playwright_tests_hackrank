@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 
 /* *** 
 Please note that this is a script to save the top 10 articles from Hacker News to a CSV file.
-I have also created some tests using the page object model located in tests and pages folders.
+I have also created some tests using the page object model and fixtures located a base file, tests and pages folders.
 Please use npm i to install my updated package.json and my tests can be run using the command
 `npx playwright test --ui or --debug` in the terminal 
 *** */
@@ -16,25 +16,24 @@ async function saveHackerNewsArticles() {
   try {
     await page.goto("https://news.ycombinator.com");
 
-    const pageElements = await page.locator("tr.athing").all();
+    //convert the page elements to an array of objects
+    const pageElements = await page
+      .locator(".titleline > a:first-child")
+      .evaluateAll((anchorLinks) => {
+        return anchorLinks.map((anchorLink) => ({
+          title: anchorLink.textContent,
+          url: (anchorLink as HTMLAnchorElement).href,
+        }));
+      });
 
-    const topTen = pageElements.slice(0, 10);
-    // 2d array of strings to store the data
+    //get the top 10 articles
+    const topTenArray = pageElements.slice(0, 10);
 
-    let topTenArray: string[][] = [];
+    let formatToCSV = topTenArray
+      .map((item) => `${item.title}, ${item.url}`)
+      .join("\n");
 
-    for (const element of topTen) {
-      const textContent = (await element.innerText())
-        .replace(/^\s+"/gm, "")
-        .split(/(?<=^\d{1,2})\./m)
-        .map((item) => item.trim());
-
-      topTenArray.push(textContent);
-    }
-
-    let formatToCSV = topTenArray.map((item) => item.join(",")).join("\n");
     //save a new file each time
-
     const timestamp = function formatDateToDDMMYY() {
       const now = new Date();
       const day = String(now.getDate()).padStart(2, "0");
@@ -46,6 +45,7 @@ async function saveHackerNewsArticles() {
 
     let topTenUnique = `topten_${timestamp()}`;
 
+    //save a new file each time
     try {
       await fs.writeFile(`./csv/${topTenUnique}.csv`, formatToCSV, "utf8");
       console.log(`CSV file created ${topTenUnique}.csv`);

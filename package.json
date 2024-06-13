@@ -5,12 +5,15 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "node --import tsx index.ts"
+    "dev": "node --import tsx index.ts",
+    "clean:snapshots": "node ./utils/deleteSnapshots.js",
+    "test": "npm run clean:snapshots && playwright test --update-snapshots --ui"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@axe-core/playwright": "^4.9.1",
     "playwright": "^1.39.0",
     "tsx": "^4.15.2",
     "uuid": "^10.0.0"
