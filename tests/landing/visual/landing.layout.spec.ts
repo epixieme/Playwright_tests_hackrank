@@ -28,10 +28,7 @@ test("has title", async ({ homePage }) => {
   expect(title).toBe("Hacker News");
 });
 
-test("has top ten articles sorted in ascending order", async ({
-  page,
-  homePage,
-}) => {
+test("has top ten articles sorted in ascending order", async ({ homePage }) => {
   const getTopTen = await homePage.getTopTenArticles();
   expect(getTopTen[0][0]).toBe("1");
   expect(getTopTen[9][0]).toBe("10");
