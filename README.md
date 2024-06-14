@@ -6,6 +6,8 @@ If accessing from github Please fork and clone this directory from https://githu
 
 To install this please use npm i to update the package.json
 
+The project contains an index.ts file that extracts the title and url of the top 10 
+
 -Talk about page object model and base file and fixtures
 -Helper function to delete snapshots to have a clean base of testing on each run
 -To try and run tests in isolation because of the limitations of the hacker rank site
