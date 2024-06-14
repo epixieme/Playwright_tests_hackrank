@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 /* *** 
 Please note that this is a script to save the top 10 articles from Hacker News to a CSV file.
 I have also created some tests using the page object model and fixtures located a base file, tests and pages folders.
-Please use npm i to install my updated package.json and my tests can be run using the command
+Please use npm i to install my updated package.json and my tests can be run using the `npm run tests` or 
 `npx playwright test --ui or --debug` in the terminal 
 *** */
 
