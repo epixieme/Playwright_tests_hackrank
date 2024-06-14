@@ -1,15 +1,12 @@
 import { expect } from "@playwright/test";
 import { test } from "../../../base";
 
-test.beforeEach(async ({ homePage }) => {
+test.beforeEach(async ({ homePage, loginPage }) => {
   await homePage.navigate();
+  await loginPage.navigateToLoginPage();
+  await loginPage.waitUntilPageLoaded(2000);
 });
 test("verify login page layout", async ({ homePage, page }) => {
-  await page.getByRole("link", { name: "login" }).click();
-
-  // wait for page to load completely otherwise an error will be displayed on hackerrank login page
-  await page.waitForTimeout(2000);
-
   const loginUserName = await page.locator('input[name="acct"]').nth(0);
   const loginPassword = await page.locator('input[name="pw"]').nth(0);
   const loginButton = await page.locator('input[type="submit"]').nth(0);

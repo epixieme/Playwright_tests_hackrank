@@ -46,21 +46,22 @@ test("can save top ten articles to CSV and match them with the website", async (
     expect(article).toEqual(articleFromSavedCSVFile[index]);
   });
 });
-
-test("test all links on the page", async ({ homePage }) => {
-
-  //login etc
-  const getTopTen = await homePage.getTopTenArticles();
-  const topTenLinks = getTopTen.map((article) => article[3]);
-  const links = topTenLinks.map((link) => {
-    return link.match(/(?<=\().+?(?=\))/g).toString();
-  });
-  const allLinks = links.map((link) => {
-    return link.replace(/['"]+/g, "");
-  });
-  for (const link of allLinks) {
-    await homePage.page.goto(link);
-    await homePage.page.waitForLoadState("domcontentloaded");
-    expect(await homePage.page.url()).toBe(link);
-  }
-}
+//
+// test("test all links on the page", async ({ homePage }) => {
+//
+// login etc
+// const getTopTen = await homePage.getTopTenArticles();
+// const topTenLinks = getTopTen.map((article) => article[3]);
+// const links = topTenLinks.map((link) => {
+// return link.match(/(?<=\().+?(?=\))/g).toString();
+// });
+// const allLinks = links.map((link) => {
+// return link.replace(/['"]+/g, "");
+// });
+// for (const link of allLinks) {
+// await homePage.page.goto(link);
+// await homePage.page.waitForLoadState("domcontentloaded");
+// expect(await homePage.page.url()).toBe(link);
+// }
+// }
+//

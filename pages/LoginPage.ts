@@ -46,6 +46,12 @@ export class LoginPage {
     const signUpPassword = await this.page.locator('input[name="pw"]').nth(1);
     await signUpPassword.fill(password);
   }
+
+  async submitsSignUp(): Promise<void> {
+    const signUpButton = await this.page.locator('input[type="submit"]').nth(1);
+    await signUpButton.click();
+  }
+
   async fillLoginCaptcha(): Promise<void> {
     const frame = this.page.frameLocator("iframe[title='reCAPTCHA']");
     const label = frame.locator("#recaptcha-anchor-label");
