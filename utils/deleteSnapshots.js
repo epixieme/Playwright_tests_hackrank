@@ -6,11 +6,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Directory where the snapshots are stored
-const snapshotDir = path.join(__dirname, "tests", "screenshots");
+// Directory where the snapshots are stored for tests and screenshots
+const testsSnapshotDir = path.join(__dirname, "../tests");
+const screenshotsDir = path.join(__dirname, "../screenshots");
 
-// Function to delete all files in a directory asynchronously
-async function deleteAllFilesInDir(dir) {
+// Function to delete all PNG files in a directory asynchronously
+async function deleteAllPngFilesInDir(dir) {
   try {
     const files = await fs.readdir(dir);
     await Promise.all(
@@ -18,13 +19,15 @@ async function deleteAllFilesInDir(dir) {
         const filePath = path.join(dir, file);
         const stat = await fs.lstat(filePath);
         if (stat.isDirectory()) {
-          await deleteAllFilesInDir(filePath); // Recursively delete directory contents
+          await deleteAllPngFilesInDir(filePath); // Recursively delete directory contents
         } else {
-          await fs.unlink(filePath); // Delete file
+          if (path.extname(file).toLowerCase() === ".png") {
+            await fs.unlink(filePath); // Delete PNG file
+            console.log(`Deleted file ${filePath}`);
+          }
         }
       })
     );
-    console.log(`Deleted snapshots in ${dir}`);
   } catch (error) {
     if (error.code === "ENOENT") {
       console.log(`${dir} isn't a directory or doesn't exist.`);
@@ -34,7 +37,16 @@ async function deleteAllFilesInDir(dir) {
   }
 }
 
-// Delete the snapshot directory contents
+// Delete all PNG files in the snapshot directories for tests and screenshots
 (async () => {
-  await deleteAllFilesInDir(snapshotDir);
+  try {
+    await deleteAllPngFilesInDir(testsSnapshotDir);
+    console.log(`Deleted PNG files in ${testsSnapshotDir}`);
+
+    // If you also want to delete PNG files in screenshots directory
+    await deleteAllPngFilesInDir(screenshotsDir);
+    console.log(`Deleted PNG files in ${screenshotsDir}`);
+  } catch (error) {
+    console.error("Error deleting PNG files:", error);
+  }
 })();

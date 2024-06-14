@@ -7,59 +7,67 @@
 import { expect } from "@playwright/test";
 import { test } from "../../../base";
 
-test.beforeEach(async ({ homePage, page }) => {
+test.beforeEach(async ({ homePage, loginPage, page }) => {
   await homePage.navigate();
-  await page.getByRole("link", { name: "login" }).click();
-  await page.waitForTimeout(2000);
+  await loginPage.navigateToLoginPage();
+  await loginPage.waitUntilPageLoaded(2000);
 });
 //
 test("verify that a user cannot login without a username or password", async ({
-  homePage,
+  loginPage,
   page,
 }) => {
-  const loginButton = await page.locator('input[type="submit"]').nth(0);
-  await loginButton.click();
-  expect(await page.getByText("Bad login.")).toBeTruthy();
+  await loginPage.submitLogin();
+  await loginPage.waitUntilPageLoaded(1000);
+  const text = await page.locator("body").textContent();
+  const isRecaptchaPresent =
+    (await page.locator('iframe[title="reCAPTCHA"]').count()) > 0;
+
+  if (isRecaptchaPresent) {
+    expect(text).toContain("Validation");
+  } else {
+    expect(text).toContain("Bad login");
+  }
 });
 
 test("verify that a user cannot login with an invalid username and password", async ({
-  homePage,
+  loginPage,
   page,
 }) => {
-  const loginUserName = await page.locator('input[name="acct"]').nth(0);
-  await loginUserName.fill("bananasunday");
-  const loginPassword = await page.locator('input[name="pw"]').nth(0);
-  await loginPassword.fill("bananasplit");
-  const loginButton = await page.locator('input[type="submit"]').nth(0);
-  await loginButton.click();
-  expect(await page.getByText("Bad login.")).toBeTruthy();
+  await loginPage.fillLoginUserName("bananasunday");
+
+  await loginPage.fillLoginPassword("bananasplit");
+  await loginPage.submitLogin();
+  await loginPage.waitUntilPageLoaded(1000);
+
+  const isRecaptchaPresent =
+    (await page.locator('iframe[title="reCAPTCHA"]').count()) > 0;
+  const text = await page.locator("body").textContent();
+  if (isRecaptchaPresent) {
+    expect(text).toContain("Validation");
+  } else {
+    expect(text).toContain("Bad login");
+  }
 });
 
 // note the recaptcha sometimes shows the challenge which sometimes fails the test. At other times it does not show the challenge.
 test("verify that a user can login with a valid username and password", async ({
-  homePage,
+  loginPage,
   page,
 }) => {
   // wait for page to load completely otherwise an error will be displayed
-  await page.waitForTimeout(2000);
-  const loginUserName = await page.locator('input[name="acct"]').nth(0);
-  await loginUserName.fill("kirstieTest");
-  const loginPassword = await page.locator('input[name="pw"]').nth(0);
-  await loginPassword.fill("password");
-  const loginButton = await page.locator('input[type="submit"]').nth(0);
-  await loginButton.click();
-  await page.waitForTimeout(2000);
-  await page.waitForURL("https://news.ycombinator.com/login");
+  await loginPage.fillLoginUserName("kirstieTest");
 
-  const frame = page.frameLocator("iframe[title='reCAPTCHA']");
-  const label = frame.locator("#recaptcha-anchor-label");
-  await expect(label).toHaveText("I'm not a robot");
-  const checkbox = await page
-    .frameLocator('[title="reCAPTCHA"]')
-    .getByRole("checkbox");
-  await checkbox.click();
-  //wait for recaptcha to be verified
-  await page.waitForTimeout(20000);
-  await page.locator('input[type="submit"]').click();
+  await loginPage.fillLoginPassword("password");
+  await loginPage.submitLogin();
+  await loginPage.waitUntilPageLoaded(1000);
+  const isRecaptchaPresent =
+    (await page.locator('iframe[title="reCAPTCHA"]').count()) > 0;
+  if (isRecaptchaPresent) {
+    await loginPage.fillLoginCaptcha();
+    await loginPage.waitUntilPageLoaded(20000);
+    await loginPage.submitLogin();
+  }
+
   expect(await page.url()).toBe("https://news.ycombinator.com/news");
 });
