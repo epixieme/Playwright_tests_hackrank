@@ -7,7 +7,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../../base";
 import randomUserName from "../../../utils/randomUserName";
-import { log } from "console";
 
 test.beforeEach(async ({ homePage, page }) => {
   await homePage.navigate();
