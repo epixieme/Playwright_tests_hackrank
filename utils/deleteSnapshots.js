@@ -2,15 +2,15 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Convert __filename and __dirname to ES module format
+// Convert __filename and __dirname to ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Directory where the snapshots are stored for tests and screenshots
+// Directories for the snapshots
 const testsSnapshotDir = path.join(__dirname, "../tests");
 const screenshotsDir = path.join(__dirname, "../screenshots");
 
-// Function to delete all PNG files in a directory asynchronously
+// Function to delete all PNG files
 async function deleteAllPngFilesInDir(dir) {
   try {
     const files = await fs.readdir(dir);
@@ -43,7 +43,7 @@ async function deleteAllPngFilesInDir(dir) {
     await deleteAllPngFilesInDir(testsSnapshotDir);
     console.log(`Deleted PNG files in ${testsSnapshotDir}`);
 
-    // If you also want to delete PNG files in screenshots directory
+
     await deleteAllPngFilesInDir(screenshotsDir);
     console.log(`Deleted PNG files in ${screenshotsDir}`);
   } catch (error) {
