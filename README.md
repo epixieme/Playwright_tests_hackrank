@@ -2,7 +2,7 @@
 
 ## Installation instructions
 
-If accessing this project from GitHub Please fork and clone this directory from https://github.com/epixieme/qa_wolf_take_home/
+If accessing this project from GitHub Please fork and clone this directory 
 
 To install and update the package.json please use 
 
