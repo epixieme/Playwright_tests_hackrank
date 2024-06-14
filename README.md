@@ -31,13 +31,19 @@ The script also runs a helper function called deletesnapshots that deletes snaps
 
 - The deletesnapshots function can either be run through a script `npm run tests` in the terminal or manually.
  
-Note: Try and run tests in isolation because of the limitations of the HackerRank site. If tests are run at the same time this will generate errors owing to HackeRank limitations.
+Note: Try and run Playwright tests in isolation because of the limitations of the HackerRank site. If tests are run at the same time this will generate errors owing to HackeRank limitations.
 
 ## Types of Test
 Tests are organised by page, type and then feature.
 - Visual
 - Authentication
 - Validation
+
+## Helper Functions
+These can be found in the utils folder
+- deleteSnapshots - deletes png images generated from snapshots
+- randomUserName - generates a unique username
+
 
 
 
