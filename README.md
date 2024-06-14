@@ -34,7 +34,7 @@ The script also runs a helper function called deletesnapshots that deletes snaps
 Note: Try and run tests in isolation because of the limitations of the HackerRank site. If tests are run at the same time this will generate errors owing to HackeRank limitations.
 
 ## Types of Test
-Tests are organised by page and then feature.
+Tests are organised by page, type and then feature.
 - Visual
 - Authentication
 - Validation
