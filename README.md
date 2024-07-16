@@ -6,6 +6,7 @@ If accessing this project from GitHub Please fork and clone this directory
 
 To install and update the package.json please use 
 
+
 ``` npm i ``` 
 
 The project contains an index.ts file that extracts the title and URL of the top 10 articles and saves them to CSV using the node.js fs module.
